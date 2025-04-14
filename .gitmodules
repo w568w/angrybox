@@ -1,0 +1,12 @@
+[submodule "fastfetch"]
+	path = fastfetch
+	url = https://github.com/fastfetch-cli/fastfetch/
+[submodule "htop"]
+	path = htop
+	url = https://github.com/htop-dev/htop
+[submodule "nethogs"]
+	path = nethogs
+	url = https://github.com/raboof/nethogs
+[submodule "zstd"]
+	path = zstd
+	url = https://github.com/facebook/zstd

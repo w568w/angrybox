@@ -1,0 +1,4 @@
+# Some deps I haven't decided how to use yet
+deps/
+# Build artifacts
+outputs/

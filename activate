@@ -1,0 +1,6 @@
+#!/bin/bash
+
+export CC=clang
+export CXX=clang++
+export CFLAGS="-static -fPIC"
+export CXXFLAGS="-static -fPIC"
