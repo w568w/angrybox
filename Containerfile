@@ -14,5 +14,7 @@ RUN \
 	wget \
 	automake \
 	autoconf \
+	python3 \
+	pkgconf \
 	&& \
   rm -rf /var/cache/apk/*
