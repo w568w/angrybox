@@ -1,0 +1,130 @@
+name: Build Tools
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_duf:
+        type: boolean
+        default: true
+        description: "Build duf"
+      build_fastfetch:
+        type: boolean
+        default: true
+        description: "Build fastfetch"
+      build_gdu:
+        type: boolean
+        default: true
+        description: "Build gdu"
+      build_htop:
+        type: boolean
+        default: true
+        description: "Build htop"
+      build_nethogs:
+        type: boolean
+        default: true
+        description: "Build nethogs"
+      build_ouch:
+        type: boolean
+        default: true
+        description: "Build ouch"
+      build_rclone:
+        type: boolean
+        default: true
+        description: "Build rclone"
+      build_xxhash:
+        type: boolean
+        default: true
+        description: "Build xxhash"
+      build_zpaqfranz:
+        type: boolean
+        default: true
+        description: "Build zpaqfranz"
+      build_zstd:
+        type: boolean
+        default: true
+        description: "Build zstd"
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Generate build matrix
+        id: set-matrix
+        run: |
+          matrix='[]'
+          add() { matrix=$(echo "$matrix" | jq -c --arg n "$1" --arg s "$2" '. + [{"name": $n, "script": $s}]'); }
+
+          if [ "${{ inputs.build_duf }}" = "true" ];       then add duf       duf.sh;       fi
+          if [ "${{ inputs.build_fastfetch }}" = "true" ];  then add fastfetch fastfetch.sh;  fi
+          if [ "${{ inputs.build_gdu }}" = "true" ];        then add gdu       gdu.sh;        fi
+          if [ "${{ inputs.build_htop }}" = "true" ];       then add htop      htop.sh;       fi
+          if [ "${{ inputs.build_nethogs }}" = "true" ];    then add nethogs   nethogs.sh;    fi
+          if [ "${{ inputs.build_ouch }}" = "true" ];       then add ouch      ouch.sh;       fi
+          if [ "${{ inputs.build_rclone }}" = "true" ];     then add rclone    rclone.sh;     fi
+          if [ "${{ inputs.build_xxhash }}" = "true" ];     then add xxhash    xxhash.sh;     fi
+          if [ "${{ inputs.build_zpaqfranz }}" = "true" ];  then add zpaqfranz zpaqfranz.sh;  fi
+          if [ "${{ inputs.build_zstd }}" = "true" ];       then add zstd      zstd.sh;       fi
+
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: setup
+    if: needs.setup.outputs.matrix != '[]'
+    runs-on: ubuntu-latest
+    container: alpine:edge
+    strategy:
+      fail-fast: false
+      matrix:
+        tool: ${{ fromJSON(needs.setup.outputs.matrix) }}
+    steps:
+      - name: Install dependencies
+        run: |
+          apk update && apk upgrade && apk add --no-cache \
+            clang clang-static libc++-dev libc++-static lld binutils \
+            make cmake bash git linux-headers wget automake autoconf \
+            python3 pkgconf unzip dpkg
+
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Setup /io directory
+        run: |
+          ln -s "$GITHUB_WORKSPACE" /io
+          mkdir -p /io/outputs
+
+      - name: Build ${{ matrix.tool.name }}
+        run: bash /io/${{ matrix.tool.script }}
+
+      - name: Strip binaries
+        run: |
+          for f in /io/outputs/*; do
+            strip "$f" 2>/dev/null || true
+          done
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ matrix.tool.name }}
+          path: /io/outputs/*
+          retention-days: 90
+
+  collect:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v7
+        with:
+          path: outputs
+          merge-multiple: true
+
+      - name: Upload combined artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: angrybox-all
+          path: outputs/
+          retention-days: 90
