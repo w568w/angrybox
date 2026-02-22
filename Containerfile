@@ -5,6 +5,8 @@ RUN \
   apk add --no-cache \
 	clang \
 	clang-static \
+	libc++-dev \
+	libc++-static \
 	lld \
 	binutils \
 	make \

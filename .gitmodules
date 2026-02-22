@@ -10,3 +10,6 @@
 [submodule "zstd"]
 	path = zstd
 	url = https://github.com/facebook/zstd
+[submodule "zpaqfranz"]
+	path = zpaqfranz
+	url = https://github.com/fcorbelli/zpaqfranz
