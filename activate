@@ -3,6 +3,6 @@
 export CC=clang
 export CXX=clang++
 export CPP="clang -E"
-export CFLAGS="-static -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -fPIC -fno-plt -fstack-clash-protection -fcf-protection"
+export CFLAGS="-static ${ANGRYBOX_OPT_LEVEL:--O2} -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -fPIC -fno-plt -fstack-clash-protection -fcf-protection"
 export CXXFLAGS="$CFLAGS"
 export LDFLAGS="-fuse-ld=lld"
