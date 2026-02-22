@@ -19,5 +19,7 @@ RUN \
 	autoconf \
 	python3 \
 	pkgconf \
+	unzip \
+	dpkg \
 	&& \
   rm -rf /var/cache/apk/*

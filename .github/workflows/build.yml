@@ -79,9 +79,18 @@ jobs:
       matrix:
         tool: ${{ fromJSON(needs.setup.outputs.matrix) }}
     steps:
+      - name: Cache apk packages
+        uses: actions/cache@v5
+        with:
+          path: /etc/apk/cache
+          key: apk-edge-${{ hashFiles('.github/workflows/build.yml') }}
+          restore-keys: |
+            apk-edge-
+
       - name: Install dependencies
         run: |
-          apk update && apk upgrade && apk add --no-cache \
+          mkdir -p /etc/apk/cache
+          apk update && apk upgrade && apk add \
             clang clang-static libc++-dev libc++-static lld binutils \
             make cmake bash git linux-headers wget automake autoconf \
             python3 pkgconf unzip dpkg
