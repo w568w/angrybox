@@ -2,5 +2,7 @@
 
 export CC=clang
 export CXX=clang++
+export CPP="clang -E"
 export CFLAGS="-static -fPIC"
 export CXXFLAGS="-static -fPIC"
+export LDFLAGS="-fuse-ld=lld"
