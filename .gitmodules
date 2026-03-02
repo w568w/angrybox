@@ -16,3 +16,6 @@
 [submodule "xxHash"]
 	path = xxHash
 	url = https://github.com/Cyan4973/xxHash
+[submodule "tmux"]
+	path = tmux
+	url = https://github.com/tmux/tmux

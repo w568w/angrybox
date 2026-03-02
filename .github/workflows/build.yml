@@ -39,6 +39,10 @@ on:
         type: boolean
         default: true
         description: "Build zpaqfranz"
+      build_tmux:
+        type: boolean
+        default: true
+        description: "Build tmux"
       build_zstd:
         type: boolean
         default: true
@@ -64,6 +68,7 @@ jobs:
           if [ "${{ inputs.build_ouch }}" = "true" ];       then add ouch      ouch.sh;       fi
           if [ "${{ inputs.build_rclone }}" = "true" ];     then add rclone    rclone.sh;     fi
           if [ "${{ inputs.build_xxhash }}" = "true" ];     then add xxhash    xxhash.sh;     fi
+          if [ "${{ inputs.build_tmux }}" = "true" ];       then add tmux      tmux.sh;       fi
           if [ "${{ inputs.build_zpaqfranz }}" = "true" ];  then add zpaqfranz zpaqfranz.sh;  fi
           if [ "${{ inputs.build_zstd }}" = "true" ];       then add zstd      zstd.sh;       fi
 
